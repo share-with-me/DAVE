@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<head>
+<title>Dave Web App</title>
+<!-- Latest compiled and minified CSS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript" src = "d3.min.js"></script>
+</head>
+<style type="text/css">
+	.nav-sidebar{
+		background-color: ;
+		overflow-y: auto;
+	}
+	.nav-sidebar {
+  margin-right: -21px; /* 20px padding + 1px border */
+  margin-bottom: 20px;
+  margin-left: -20px;
+}
+.nav-sidebar > li > a {
+  padding-right: 20px;
+  padding-left: 20px;
+ /* margin-left: 20px;*/
+}
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #428bca;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: red;
+  stroke-width: 2px;
+}
+
+</style>
+<body>
+
+	<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">DAVE WebApp</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        
+        
+      </ul>
+      
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Settings</a></li>
+        <li><a href="#">Profile</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+	 <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="index.html">Graph<span class="sr-only">(current)</span></a></li>
+            <li class="active"><a href="line.html" style="margin-left: 20px;">Line graph</a></li>
+            <li><a href="bar.html" style="margin-left: 20px;">Bar graph</a></li>
+            <li><a href="donut.html" style="margin-left: 20px;">Donut Chart</a></li>
+            <li><a href="voronoi.html" style="margin-left: 20px;">Voronoi Plot</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="">Tables</a></li>
+            <li><a href="tab.html" style="margin-left: 20px;">Tabular View</a></li>
+            <li><a href="tab_sort.html" style="margin-left: 20px;">Sortable header tables</a></li>
+          </ul>
+          
+        </div>
+
+        <div class="col-sm-9 col-md-10">
+        	<h1 align = "center">Simple Line Chart Representation</h1>
+
+            <script type="text/javascript">
+        
+              
+              var margin = {top: 20, right: 20, bottom: 30, left: 50},
+              width = 960 - margin.left - margin.right,
+              height = 500 - margin.top - margin.bottom; //Setup the marginal bounds
+
+              var formatDate = d3.time.format("%d-%b-%y"); //Parse the date in this format
+
+              var x = d3.time.scale()
+              .range([0, width]);
+
+              var y = d3.scale.linear()
+              .range([height, 0]);
+
+              var xAxis = d3.svg.axis()
+              .scale(x)
+              .orient("bottom"); //X-axis orientation
+
+              var yAxis = d3.svg.axis()
+              .scale(y)
+              .orient("left"); //Y-axis orientation
+
+              var line = d3.svg.line()
+              .x(function(d) { return x(d.date); })
+              .y(function(d) { return y(d.close); }); //line function called with x value being date and y value being close
+
+              var svg = d3.select("body").append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); //setup svg to the body with the attrubutes
+
+              d3.tsv("dat_line.tsv", type, function(error, data) {
+              if (error) throw error;
+
+              x.domain(d3.extent(data, function(d) { return d.date; })); //set x domain
+              y.domain(d3.extent(data, function(d) { return d.close; })); //set y domain
+
+              svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis);
+
+              svg.append("g")
+              .attr("class", "y axis")
+              .call(yAxis)
+              .append("text")
+              .attr("transform", "rotate(-90)") //Rotate the text 'Price ($)' by 90 degrees
+              .attr("y", 6)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end")
+              .text("Price ($)");
+
+              svg.append("path")
+              .datum(data)
+              .attr("class", "line")
+              .attr("d", line);
+        });
+
+              function type(d) {
+              d.date = formatDate.parse(d.date); //Parse and return 
+              d.close = +d.close;
+              return d;
+              }
+
+</script>
+<script type="text/javascript">
+
+window.$ = window.jQuery = require("jquery");
+$(document).ready(function(){
+$("svg").css({top: 150, left: 300, position:'absolute'});
+});
+</script>
+
+        </div>
+
+
+		</div>
+	   </div>
+	</div>
+
+
+
+
+</body>
+</html>
